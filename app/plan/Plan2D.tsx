@@ -30,7 +30,7 @@ export default function Plan2D(props:PlannerProps){
  const [size,setSize]=useState({w:900,h:700}),[view,setView]=useState({x:8,y:7.6,z:35});
  const latest=useRef({items,snap,view,size,onSelect,onBegin,onPreview,onEnd});
  useEffect(()=>{latest.current={items,snap,view,size,onSelect,onBegin,onPreview,onEnd}},[items,snap,view,size,onSelect,onBegin,onPreview,onEnd]);
- const fit=useCallback(()=>{const room=rooms.find(r=>r.id===focus),b=room?bounds(room.poly):{minX:-.8,minY:-.8,maxX:16.9,maxY:16};
+ const fit=useCallback(()=>{const room=rooms.find(r=>r.id===focus),b=room?bounds(room.poly):{minX:-.8,minY:-.8,maxX:21.8,maxY:16};
   const w=Math.max(b.maxX-b.minX,2),h=Math.max(b.maxY-b.minY,2);
   setView({x:(b.minX+b.maxX)/2,y:(b.minY+b.maxY)/2,z:Math.max(12,Math.min((size.w-90)/w,(size.h-110)/h,180))});
  },[focus,size.w,size.h]);

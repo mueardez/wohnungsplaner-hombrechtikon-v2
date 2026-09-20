@@ -17,9 +17,14 @@ test("real room polygons do not double-count zones",()=>{
  const triangles=poly=>ShapeUtils.triangulateShape(poly.map(p=>new Vector2(...p)),[]).map(indices=>indices.map(i=>poly[i]));
  for(let i=0;i<actual.length;i++)for(let j=i+1;j<actual.length;j++)assert.equal(triangles(actual[i].poly).some(a=>triangles(actual[j].poly).some(b=>overlap(a,b))),false,`${actual[i].name} overlaps ${actual[j].name}`);
 });
-test("Keller and Terrasse are selectable inventory destinations only",()=>{
+test("Keller is a detached 3 m room and Terrasse remains inventory-only",()=>{
  assert.ok(roomNames.includes("Keller"));assert.ok(roomNames.includes("Terrasse"));
- assert.ok(!rooms.some(r=>r.name==="Keller"||r.name==="Terrasse"));
+ assert.ok(!rooms.some(r=>r.name==="Terrasse"));
+ const cellar=rooms.find(r=>r.name==="Keller"),b=bounds(cellar.poly);close(b.maxX-b.minX,3);close(b.maxY-b.minY,3);close(area(cellar.poly),9);
+ assert.ok(b.minX>Math.max(...rooms.filter(r=>r!==cellar).map(r=>bounds(r.poly).maxX)));
+ const f=item({room:"Keller",x:19.5,y:3.5});assert.deepEqual(warnings(f,[f]),[]);
+ assert.ok(warnings({...f,x:17.9},[]).some(w=>w.includes("Wand")));
+ const snapped=snapItem({...f,x:18.52},true);close(snapped.w,f.w);close(snapped.d,f.d);close(snapped.x,18.5);
  assert.equal(new Set(roomNames).size,roomNames.length);
 });
 test("all door openings have a clear midpoint through the wall",()=>{

@@ -25,7 +25,7 @@ export default function Home(){
  const rotate=(degrees:number)=>{if(active)update({rot:(active.rot+degrees*Math.PI/180+Math.PI*2)%(Math.PI*2)})};
  const remove=()=>{if(!active)return;plan.change(plan.current.current.filter(f=>f.id!==active.id));setSelected(null);setNotice("Aus dem Testplan entfernt. Der Inventareintrag bleibt erhalten.")};
  const place=(item:InventoryItem)=>{
-  if(!item.width||!item.depth||!item.height||item.includeInPlan===false||["Keller","Terrasse"].includes(item.room)){setNotice("Diese Inventarposition ist nur zur Inventarisierung vorgesehen.");return}
+  if(!item.width||!item.depth||!item.height||item.includeInPlan===false||item.room==="Terrasse"){setNotice("Diese Inventarposition ist nur zur Inventarisierung vorgesehen.");return}
   const placed=plan.current.current.filter(f=>f.inventoryId===item.id);
   if(placed.length>=item.quantity){setSection("plan");setSelected(placed[0].id);setFocus(rooms.find(r=>r.name===item.room)?.id??"all");setNotice("Alle Exemplare dieser Position sind bereits im Testplan.");return}
   const room=rooms.find(r=>r.name===item.room)??rooms[6],b=bounds(room.poly);
@@ -56,8 +56,8 @@ export default function Home(){
     <aside className="rooms-panel"><div className="panel-heading"><span className="kicker">DEINE WOHNUNG</span><h2>Räume & Bereiche</h2></div>
      <button className={focus==="all"?"room-row current":"room-row"} onClick={()=>{setFocus("all");setSelected(null)}}><span>Gesamtwohnung</span><small>Übersicht</small></button>
      <div className="room-list">{rooms.filter(r=>!r.zone).map(r=><button key={r.id} className={focus===r.id?"room-row current":"room-row"} onClick={()=>{setFocus(r.id);setSelected(null)}}><span>{r.name}</span><small>ca. {fmt(area(r.poly))} m²</small></button>)}</div>
-     <details className="subareas"><summary>Weitere Bereiche</summary>{rooms.filter(r=>r.zone).map(r=><button key={r.id} className={focus===r.id?"room-row current":"room-row"} onClick={()=>{setFocus(r.id);setSelected(null)}}>{r.name}</button>)}<div className="inventory-zone">Terrasse · Keller<small>Nur im Inventar zuordnen</small></div></details>
-     <details className="plan-notes"><summary>Planstand & Annahmen</summary><p>Nach Originalplan neu abgeglichen. Raumflächen sind aus der Modellgeometrie berechnet.</p><p>Raumhöhe: 2,39 m laut Schnitt. Einbauten, Öffnungsdetails und Nischen sind angenähert. Für die Küche fehlt der separate Detailplan.</p><p>Vor einer Bestellung vor Ort nachmessen.</p></details>
+     <details className="subareas"><summary>Weitere Bereiche</summary>{rooms.filter(r=>r.zone).map(r=><button key={r.id} className={focus===r.id?"room-row current":"room-row"} onClick={()=>{setFocus(r.id);setSelected(null)}}>{r.name}</button>)}<div className="inventory-zone">Terrasse<small>Nur im Inventar zuordnen</small></div></details>
+     <details className="plan-notes"><summary>Planstand & Annahmen</summary><p>Nach Originalplan neu abgeglichen. Raumflächen sind aus der Modellgeometrie berechnet.</p><p>Raumhöhe: 2,39 m laut Schnitt. Einbauten, Öffnungsdetails und Nischen sind angenähert. Für die Küche fehlt der separate Detailplan.</p><p>Keller: separat dargestellt, 3 × 3 m (9 m²). Höhe 2,39 m angenommen; Türposition noch nicht erfasst.</p><p>Vor einer Bestellung vor Ort nachmessen.</p></details>
     </aside>
     <section className="v2-stage" aria-label="Planungsfläche"><div className="stage-title"><span>{activeRoom?.name??"Gesamtwohnung"}</span><small>{mode==="2d"?"2D · massstäblich":"3D · schematische Möbelformen"}</small></div>
      {mode==="2d"?<Plan2D {...viewerProps}/>:<Plan3D {...viewerProps}/>}

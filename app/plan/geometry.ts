@@ -23,13 +23,17 @@ export const rooms:Room[] = [
  {id:"nische-noa",name:"Nische Noa",poly:rect(8.15,10.26,4.10,.78),label:[10.15,10.65],tone:"#f2ede4",zone:true},
  {id:"nische-eltern",name:"Nische Eltern",poly:rect(12.37,10.26,2.30,.78),label:[13.52,10.65],tone:"#f2ede4",zone:true},
  {id:"dusche",name:"Dusche",poly:rect(13.05,8.04,3,2),label:[14.55,9.28],tone:"#dfeae7",measured:"3,00 × 2,00 m"},
+ {id:"keller",name:"Keller",poly:rect(18,2,3,3),label:[19.5,3.5],tone:"#e0e4e8",measured:"3,00 × 3,00 m"},
  {id:"gang-dusche",name:"Gang Dusche",poly:rect(12.37,10.16,3.68,.98),label:[14.3,10.63],tone:"#f2ede4",zone:true}
 ];
 // Subareas remain assignable; they are not added to total floor area.
-export const roomNames=rooms.map(r=>r.name).concat("Terrasse","Keller");
+export const roomNames=rooms.map(r=>r.name).concat("Terrasse");
 export const wallHeight=2.39; // Read from section A–A; not a field measurement.
 export const walls:Wall[]=[];
 const wall=(a:Point,b:Point,thickness=.12,outer=false)=>walls.push({a,b,thickness,outer});
+// Detached cellar: 3 x 3 m clear interior; height assumed, door position unknown.
+wall([17.94,1.94],[21.06,1.94]);wall([21.06,1.94],[21.06,5.06]);
+wall([21.06,5.06],[17.94,5.06]);wall([17.94,5.06],[17.94,1.94]);
 // Outer walls are split at actual openings; there are no solid walls behind doors.
 wall([-.10,-.10],[8.025,-.10],.20,true);
 [[0,.95],[1.95,2.20],[3.20,4.37],[5.37,5.62],[6.62,8.21],[11.77,15.16]].forEach(([a,b])=>wall([-.10,a],[ -.10,b],.20,true));
